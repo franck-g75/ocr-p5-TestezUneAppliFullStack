@@ -9,5 +9,7 @@
     "./src/main.ts",
     "./src/test.ts",
     "**/*.conf.js"
-  ]
+  ],
+  "reporter": ["json", "html"],
+  "tempDirectory": "./.nyc_output"
 }

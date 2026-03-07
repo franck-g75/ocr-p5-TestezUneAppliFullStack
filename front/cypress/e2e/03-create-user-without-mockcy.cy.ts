@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 describe('Login spec', () => {
   it('Login successfull', () => {
     cy.visit('/login')
@@ -25,3 +26,9 @@ describe('Login spec', () => {
     cy.url().should('include', '/sessions')
   })
 });
+
+
+
+
+
+
