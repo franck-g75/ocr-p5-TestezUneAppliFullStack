@@ -82,7 +82,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "project-name:build",
-            "proxyConfig": "src/proxy.config.json"
+            "proxyConfig": "./proxy.config.json"
           },
           "configurations": {
             "production": {
@@ -143,6 +143,7 @@
           "options": {
             "devServerTarget": "yoga:serve-coverage",
             "watch": true,
+            "proxyConfig": "./proxy.config.json",
             "headless": false
           },
           "configurations": {
