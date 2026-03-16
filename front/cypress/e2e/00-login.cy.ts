@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 import { adminEmail, adminTruePassword } from '../support/Constants.ts';
 
+//emprunté au sujet
+
 describe('Login spec', () => {
   it('Login successfull', () => {
     cy.visit('/login')

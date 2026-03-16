@@ -5,14 +5,6 @@ import { adminEmail, adminTruePassword } from '../support/Constants.ts';
 // ==> donc pas besoin de gérer le token
 //
 
-
-//before All : connecting as admin
-before(() => {
-
-  cy.request( "POST", 'http://localhost:8080/api/auth/login',   { "email": adminEmail, "password": adminTruePassword });
-  
-});
-
 describe('Sessions Links verification', () => {
 
   //pour se connecter a la liste des sessions

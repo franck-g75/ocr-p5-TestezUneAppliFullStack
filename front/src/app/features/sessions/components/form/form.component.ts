@@ -88,4 +88,8 @@ export class FormComponent implements OnInit {
     this.matSnackBar.open(message, 'Close', { duration: 3000 });
     this.router.navigate(['sessions']);
   }
+
+  public setId(param: string): void{
+    this.id = param;
+  }
 }

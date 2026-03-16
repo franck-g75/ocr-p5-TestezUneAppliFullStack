@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
@@ -75,7 +76,7 @@ describe('MeComponent', () => {
 
   it('should call this.sessionApiService.delete() when component.delete() is invoked', () => {
                  
-      // 👉  Cast en `any` pour accéder à la méthode privée
+      // Cast en `any` pour accéder à la méthode privée
       component.delete();
       expect(myUserServiceMock.delete).toHaveBeenCalledWith(mockSessionService.sessionInformation.id.toString());
 
@@ -83,7 +84,7 @@ describe('MeComponent', () => {
  
   it('should call this.sessionApiService.delete() when component.delete() is invoked', () => {
                  
-      // 👉  Cast en `any` pour accéder à la méthode privée
+      // Cast en `any` pour accéder à la méthode privée
       component.ngOnInit();
       expect(myUserServiceMock.getById).toHaveBeenCalledWith(mockSessionService.sessionInformation.id.toString());
 

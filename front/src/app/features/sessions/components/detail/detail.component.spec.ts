@@ -93,7 +93,7 @@ describe('DetailComponent', () => {
 
   it('should call this.sessionApiService.participate() when component.participate() is invoked', () => {
                
-    // 👉  Cast en `any` pour accéder à la méthode privée
+    // Cast en `any` pour accéder à la méthode privée
     const privateSpy = jest.spyOn(component as any, 'fetchSession' as any).mockImplementation(() => {});
     component.participate();
     expect(mySessionApiServiceMock.participate).toHaveBeenCalledWith(
@@ -106,7 +106,7 @@ describe('DetailComponent', () => {
 
   it('should call this.sessionApiService.unParticipate() when component.unParticipate() is invoked', () => {
     
-    // 👉  Cast en `any` pour accéder à la méthode privée
+    // Cast en `any` pour accéder à la méthode privée
     const privateSpy = jest.spyOn(component as any, 'fetchSession' as any).mockImplementation(() => {});
     component.unParticipate();
     expect(mySessionApiServiceMock.unParticipate).toHaveBeenCalledWith(

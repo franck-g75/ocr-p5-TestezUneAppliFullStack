@@ -15,26 +15,75 @@ import { SessionService } from 'src/app/services/session.service';
 import { SessionApiService } from '../../services/session-api.service';
 
 import { FormComponent } from './form.component';
-import { ActivatedRoute, convertToParamMap, Router, Routes } from '@angular/router';
+import {  Router, Routes } from '@angular/router';
 import { of } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
 
-@Component({
-    selector: 'sessions',
-    template: `ID : {{ id }}` 
-  })
-class DummyComponent implements OnInit {
-  id!: string;
-  constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id')!;
+
+describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=true et update=false', () => {
+  let component: FormComponent;
+  let fixture: ComponentFixture<FormComponent>;
+  let value = {name:"guin",date:new Date("2026-0ComponentFixture<FormComponent>2-28"),teacher_id:1,description:"pilate"};
+
+  const sessionServiceMock = {
+    sessionInformation: {
+      admin: true
+    }
   }
-}
+  const sessionApiMock = {
+    create: jest.fn().mockReturnValue(of({} as Session)),
+    update: jest.fn().mockReturnValue(of({} as Session)),
+  };
+  const snackBarMock = {
+    open: jest.fn()
+  };
 
-const routes: Routes = [
-  { path: 'sessions/:id', component: DummyComponent },
-];
+  beforeEach(async () => {
+
+    await TestBed.configureTestingModule({
+
+      imports: [
+        RouterTestingModule.withRoutes([  { path: 'sessions', component: ComponentFixture<FormComponent> }  ]),
+        HttpClientModule,
+        MatCardModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule, 
+        MatSnackBarModule,
+        MatSelectModule,
+        BrowserAnimationsModule
+      ],
+      providers: [
+        { provide: SessionService, useValue: sessionServiceMock }, //admin=false
+        { provide: SessionApiService, useValue: sessionApiMock }, 
+        { provide: MatSnackBar, useValue: snackBarMock }
+      ],
+      declarations: [FormComponent]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(FormComponent); //pbm
+    component = fixture.componentInstance;
+    fixture.detectChanges();   // ngOnInit()
+
+  });
+
+  it ('should call create when onUpdate is false', () =>{
+    component.onUpdate=false;
+    component.sessionForm?.setValue(value);
+    component.submit();
+
+    expect(sessionApiMock.create).toHaveBeenCalledWith(
+      component.sessionForm?.value as Session
+    );
+
+    expect(snackBarMock.open).toHaveBeenCalledWith(
+      'Session created !','Close',{ duration: 3000 } 
+    );
+
+  });
+
+});
 
 
 
@@ -42,13 +91,88 @@ const routes: Routes = [
 
 
 
+describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=true et update=true', () => {
+  let component: FormComponent;
+  let fixture: ComponentFixture<FormComponent>;
+  let theId: string;
+  let value = {name:"guin",date:new Date("2026-02-28"),teacher_id:1,description:"pilate"};
+
+  const sessionServiceMock = {
+    sessionInformation: {
+      admin: true
+    }
+  }
+
+  const sessionApiMock = {
+    create: jest.fn().mockReturnValue(of({} as Session)),
+    update: jest.fn().mockReturnValue(of({} as Session)),
+  };
+  const snackBarMock = {
+    open: jest.fn()
+  };
+
+  beforeEach(async () => {
+    
+    await TestBed.configureTestingModule({
+
+      imports: [
+        RouterTestingModule.withRoutes([  { path: 'sessions', component: ComponentFixture<FormComponent> }  ]),
+        HttpClientModule,
+        MatCardModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule, 
+        MatSnackBarModule,
+        MatSelectModule,
+        BrowserAnimationsModule
+      ],
+      providers: [
+        { provide: SessionService, useValue: sessionServiceMock }, //admin=false
+        { provide: SessionApiService, useValue: sessionApiMock }, 
+        { provide: MatSnackBar, useValue: snackBarMock }
+      ],
+      declarations: [FormComponent]
+    }).compileComponents();
+
+    theId = "\"1\"";
+    fixture = TestBed.createComponent(FormComponent); //pbm
+    component = fixture.componentInstance;
+    fixture.detectChanges();   // ngOnInit()
+
+  });
+
+  it ('should call update when onUpdate is true', () =>{
+    component.onUpdate=true;
+    component.setId(theId);
+    component.sessionForm?.setValue(value);
+    component.submit();
+
+    expect(sessionApiMock.update).toHaveBeenCalledWith(
+      theId, component.sessionForm?.value as Session
+    );
+
+    expect(snackBarMock.open).toHaveBeenCalledWith(
+      'Session updated !','Close',{ duration: 3000 } 
+    );
+
+  });
+
+});
 
 
-describe('FormComponent with mock and admin=false', () => {
+
+
+describe('FormComponent.ngOnInit with mock and admin=false', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
   let router: Router;
   
+  const routes: Routes = [
+    { path: 'sessions/:id', component: ComponentFixture<FormComponent> },
+    { path: 'sessions', component: ComponentFixture<FormComponent> },
+  ];
+
   const mockSessionService = {
     sessionInformation: {
       admin: false
@@ -74,7 +198,7 @@ describe('FormComponent with mock and admin=false', () => {
         { provide: SessionService, useValue: mockSessionService }, //admin=false
         SessionApiService
       ],
-      declarations: [FormComponent,DummyComponent]
+      declarations: [FormComponent]
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -86,32 +210,13 @@ describe('FormComponent with mock and admin=false', () => {
     fixture.detectChanges();   // ngOnInit() lit l’URL via ActivatedRoute
   });
 
-  afterEach(() => {
-    // 1️⃣ Détruire le composant et son DOM
-    if (fixture) {
-      fixture.destroy();
-    }
-
-    // 2️⃣ Réinitialiser le module de test Angular
-    TestBed.resetTestingModule();
-
-    // 3️⃣ Restaurer tous les mocks Jest
-    jest.restoreAllMocks();
-
-    // 4️⃣ Retour aux timers réels (si des fake timers ont été utilisés)
-    jest.useRealTimers();
-  });
-  
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
-
   
   it('should redirect toward sessions when admin=false', () => {
-    //console.log('redirect toward sessions when admin=false');
     router.navigate = jest.fn();
     component.ngOnInit();
-    //console.log("admin = " + mockSessionService.sessionInformation.admin);
     expect(router.navigate).toHaveBeenCalledWith(["/sessions"]);
   });
   
@@ -121,18 +226,17 @@ describe('FormComponent with mock and admin=false', () => {
 
 
 
-
-
-
-
-
-
-
-describe('FormComponent with mock and admin=true', () => {
+describe('FormComponent.ngOnInit with mock and admin=true', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
   let router: Router;
   
+  const routes: Routes = [
+    { path: 'sessions/:id', component: ComponentFixture<FormComponent> },
+    { path: 'sessions/update/:id', component: ComponentFixture<FormComponent> },
+    { path: 'sessions', component: ComponentFixture<FormComponent> }
+  ];
+
   const mockSessionService = {
     sessionInformation: {
       admin: true
@@ -158,7 +262,7 @@ describe('FormComponent with mock and admin=true', () => {
         { provide: SessionService, useValue: mockSessionService }, //admin=false
         SessionApiService
       ],
-      declarations: [FormComponent,DummyComponent]
+      declarations: [FormComponent]
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -170,32 +274,13 @@ describe('FormComponent with mock and admin=true', () => {
     fixture.detectChanges();   // ngOnInit() lit l’URL via ActivatedRoute
   });
 
-  afterEach(() => {
-    // 1️⃣ Détruire le composant et son DOM
-    if (fixture) {
-      fixture.destroy();
-    }
-
-    // 2️⃣ Réinitialiser le module de test Angular
-    TestBed.resetTestingModule();
-
-    // 3️⃣ Restaurer tous les mocks Jest
-    jest.restoreAllMocks();
-
-    // 4️⃣ Retour aux timers réels (si des fake timers ont été utilisés)
-    jest.useRealTimers();
-  });
-
   it('should redirect toward sessions when admin=true', () => {
-    //console.log('redirect toward sessions when admin=true');
     router.navigate = jest.fn();
     component.ngOnInit();
-    //console.log("admin = " + mockSessionService.sessionInformation.admin);
-    expect(router.navigate).not.toHaveBeenCalledWith(["/sessions/1&update=true"]);
+    expect(router.navigate).not.toHaveBeenCalledWith(["/sessions/update/1"]);
   });
 
   it('should set update to true', () => {
-    //console.log('should set update to true');
     component.ngOnInit();
     expect(component.onUpdate).toBeTruthy();
   });
@@ -207,19 +292,7 @@ describe('FormComponent with mock and admin=true', () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-describe('FormComponent without mock', () => {
+describe('FormComponent.form completion', () => {
   let component: FormComponent;
   let router: Router;
   let fixture: ComponentFixture<FormComponent>;
@@ -254,8 +327,6 @@ describe('FormComponent without mock', () => {
       ],
       declarations: [FormComponent]
     }).compileComponents();
-
-    
 
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(FormComponent);
@@ -305,82 +376,20 @@ describe('FormComponent without mock', () => {
     for (let i = 0; i <= 2001; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-
     descriptionControl.setValue(result);
-
     expect(descriptionControl.invalid).toBeTruthy();
     expect(descriptionControl.errors?.['maxlength']).toBeTruthy();
     
   });
 
 
-/*
-  //ne fonctionne pas (encore)
-  it('should navigate to "sessions" when goToTarget() is called', () => {
-
-    const descriptionControl = component.sessionForm?.get('description') as AbstractControl;
-    const teacherControl = component.sessionForm?.get('teacher_id') as AbstractControl;
-    const dateControl = component.sessionForm?.get('date') as AbstractControl;
-    const nameControl = component.sessionForm?.get('name') as AbstractControl;
-
-    descriptionControl.setValue("desciption");
-    teacherControl.setValue(1);
-    dateControl.setValue(new Date(2026,2,25));
-    nameControl.setValue("Franck");
-
-    component.onUpdate = true;
-    component.submit();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Session created !', 'Close', { duration: 3000 });
-
-    component.onUpdate = false;
-    component.submit();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Session updated !', 'Close', { duration: 3000 });
-
-  });
-
-  it('should show a close message 3 seconds', () => {
-
-    let msg = "test message";
-    
-    const descriptionControl = component.sessionForm?.get('description') as AbstractControl;
-    const teacherControl = component.sessionForm?.get('teacher_id') as AbstractControl;
-    const dateControl = component.sessionForm?.get('date') as AbstractControl;
-    const nameControl = component.sessionForm?.get('name') as AbstractControl;
-
-    descriptionControl.setValue("desciption");
-    teacherControl.setValue(1);
-    dateControl.setValue(new Date(2026,2,25));
-    nameControl.setValue("Franck");
-    
-    component.onUpdate = true;
-    component.submit();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Session created !', 'Close', { duration: 3000 });
-
-    component.onUpdate = false;
-    component.submit();
-    expect(snackBarMock.open).toHaveBeenCalledWith('Session updated !', 'Close', { duration: 3000 });
-    
-  });
-*/
-
 });
 
 
 
-  /*
-  it('should update a session when url includes update', () => {
 
-  });
 
-  it('should call initForm directly when url do not includes update', () => {
 
-  });
 
-  it('should redirect ', () => {
 
-    console.log('onUpdate=' + component.onUpdate);
-    expect(router.navigate).toBe('');
 
-  });
-  */
- 
