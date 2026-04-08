@@ -4,6 +4,95 @@ import { adminEmail, adminTruePassword, userTrueEmail, userTruePassword } from '
 
 
 
+describe('FormComponent.form not contain XSS vulnerability', () => {
+
+
+  it('should not show XSS alert box', () => {
+
+  cy.intercept('POST', '/api/auth/login', {
+      body: {
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true
+      },
+    }).as('login');
+
+
+
+  cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/session',
+      },
+      [
+            {
+                "id": 1,
+                "name": "pilate",
+                "date": "1975-04-30T00:00:00.000+00:00",
+                "teacher_id": 1,
+                "description": "superbe cours de pilates...",
+                "users": [],
+                "createdAt": "2025-12-23T23:03:03",
+                "updatedAt": "2026-01-18T21:30:49"
+            }
+       ]).as('session');
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/teacher',
+      },
+        [
+        {
+            "id": 1,
+            "lastName": "DELA",
+            "firstName": "Margot",
+            "createdAt": "2025-12-21T22:41:06",
+            "updatedAt": "2025-12-21T22:41:06"
+        },
+        {
+            "id": 2,
+            "lastName": "THIERCE",
+            "firstName": "Hélène",
+            "createdAt": "2025-12-21T22:41:06",
+            "updatedAt": "2025-12-21T22:41:06"
+        }
+    ]).as('teacher');
+
+
+
+  cy.visit("http://localhost:4200/login");
+    
+  cy.get('input[formControlName=email]').type(adminEmail);
+  cy.get('input[formControlName=password]').type(adminTruePassword + `{enter}{enter}`);
+
+  cy.get('[data-cy="btnCreate"]').click();
+
+  cy.get('[data-cy="name"]').type('<script>alert("XSS Name");</script>');
+  cy.get('[data-cy="date"]').type('2025-12-27')//date selection
+  cy.get('[data-cy="teacher_id"]').click()//teacher selection
+  cy.get('[data-cy="teacher_option"]').contains('Margot DELA').click();
+  cy.get('[data-cy="description"]').type('<script>alert("XSS description");</script>');
+  cy.get('[data-cy="btnSave"]').click()
+ 
+  cy.on('window:alert', () => { //never saw
+    assert.Throw(() => "Une fenêtre d\'alerte s\'est affichée dans le formulaire creation / mise à jour de session ! ");
+  });
+
+  });
+
+});
+
+
+
+
+
+
+
+
+
 
 
 

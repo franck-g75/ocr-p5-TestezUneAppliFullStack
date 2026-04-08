@@ -9,6 +9,7 @@
         <h1 *ngIf="onUpdate">Update session</h1>
       </div>
     </mat-card-title>
+    
     <mat-card-content *ngIf="sessionForm">
       <form class="mt2" fxLayout="column" [formGroup]="sessionForm" (ngSubmit)="submit()">
         <mat-form-field appearance="outline" class="" fxFlex>
@@ -22,11 +23,12 @@
         <mat-form-field appearance="outline">
           <mat-label>Teacher</mat-label>
           <mat-select data-cy="teacher_id" ngDefaultControl formControlName="teacher_id">
-            <mat-option *ngFor="let teacher of teachers$ | async" [value]="teacher.id">
+            <mat-option data-cy="teacher_option" *ngFor="let teacher of teachers$ | async" [value]="teacher.id">
               {{teacher.firstName}} {{teacher.lastName}}
             </mat-option>
           </mat-select>
         </mat-form-field>
+       
         <mat-form-field appearance="outline" fxFlex>
           <mat-label>Description</mat-label>
           <textarea data-cy="description" matInput rows="8" formControlName="description"></textarea>

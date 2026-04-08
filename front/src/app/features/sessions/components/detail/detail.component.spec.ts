@@ -11,6 +11,7 @@ import { DetailComponent } from './detail.component';
 
 import { SessionApiService } from '../../services/session-api.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpTestingController } from '@angular/common/http/testing';
 
 class MySessionApiServiceMock {
   participate = jest.fn().mockReturnValue(of(null));
@@ -21,8 +22,6 @@ class MySessionApiServiceMock {
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
-  let service: SessionService;
-  let http: HttpClient;
   let mySessionApiServiceMock: MySessionApiServiceMock;
 
   const mockSessionService = {
@@ -67,10 +66,9 @@ describe('DetailComponent', () => {
 
     }).compileComponents();
    
-    service = TestBed.inject(SessionService);
+    
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
-    http = TestBed.inject(HttpClient);
 
     //fixture.detectChanges();  // Applique le binding et rend le DOM disponible
 
@@ -133,7 +131,20 @@ describe('DetailComponent', () => {
     
   });
 
-  
+  it('should call sessionApiService.delete() when component.delete() is invoked', () => {
+    
+    component.delete();
+    expect(mySessionApiServiceMock.delete).toHaveBeenCalledWith(component.sessionId);
+    
+  });
+
+
+
+
+
+
+
+
 
 });
 

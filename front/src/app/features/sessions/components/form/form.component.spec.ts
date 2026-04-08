@@ -20,6 +20,15 @@ import { of } from 'rxjs';
 
 
 
+
+
+
+
+
+
+
+
+
 describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=true et update=false', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
@@ -55,7 +64,7 @@ describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=
         BrowserAnimationsModule
       ],
       providers: [
-        { provide: SessionService, useValue: sessionServiceMock }, //admin=false
+        { provide: SessionService, useValue: sessionServiceMock }, //admin=true
         { provide: SessionApiService, useValue: sessionApiMock }, 
         { provide: MatSnackBar, useValue: snackBarMock }
       ],
@@ -67,6 +76,19 @@ describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=
     fixture.detectChanges();   // ngOnInit()
 
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   it ('should call create when onUpdate is false', () =>{
     component.onUpdate=false;
@@ -384,6 +406,7 @@ describe('FormComponent.form completion', () => {
 
 
 });
+
 
 
 
