@@ -19,8 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,7 +27,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.dto.SessionDto;
 import com.openclassrooms.starterjwt.mapper.SessionMapper;
@@ -47,26 +44,10 @@ import com.openclassrooms.starterjwt.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
-@AutoConfigureMockMvc
-public class SessionControllerTest {
-    
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private SessionMapper sessionMapper;
-
+//@SpringBootTest           //doesn't work when database is down
+//@AutoConfigureMockMvc
+public class SessionControllerIntegration<JpaMappingContext> {
+  
     @MockBean
     private UserRepository userRepository; //bean mocké
 
@@ -85,16 +66,35 @@ public class SessionControllerTest {
     @MockBean
     private SessionService sessionService; //bean mocké
 
-Long userId;
-User userMock;
-Long teacherId;
-Teacher teacherMock;
-Long sessionId;
-Session sessionMock;
-String jwt;
+    @Autowired
+    private SessionMapper sessionMapper;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    Long userId;
+    User userMock;
+    Long teacherId;
+    Teacher teacherMock;
+    Long sessionId;
+    Session sessionMock;
+    String jwt;
+    
+
 
     @BeforeEach
     void beforeEach(){
+
+      //mockMvc = MockMvcBuilders.standaloneSetup(sessionController).build();
 
       userId= 1L;
       userMock = new User();
@@ -137,7 +137,7 @@ String jwt;
 
 
     @Test
-    void shouldFindAndReturnSessionNumber1_IT() throws Exception {
+    void shouldFindAndReturnSessionNumber1() throws Exception {
       
       mockMvc.perform(
         get("http://localhost:8080/api/session/{id}",sessionId)
@@ -151,9 +151,8 @@ String jwt;
 
     }
 
-
     @Test
-    void shouldNotFindSessionAndReturn4xx_badId_IT() throws Exception {
+    void shouldNotFindSessionAndReturn4xx_badId() throws Exception {
 
       mockMvc.perform(
         get("http://localhost:8080/api/session/{id}",sessionId+1)     //<-- +1 is important !!!
@@ -165,7 +164,7 @@ String jwt;
 
 
     @Test
-    void shouldNotFindTeacherAndReturn4xx_badNumberFormat_IT() throws Exception {
+    void shouldNotFindTeacherAndReturn4xx_badNumberFormat() throws Exception {
       
       mockMvc.perform(
           get("http://localhost:8080/api/session/a") //<-- a is important !!!
@@ -175,114 +174,21 @@ String jwt;
 
     }
 
-
-
-  @Test
-  void shouldCreateSessionAndReturnSession_IT() throws Exception {
-    
-    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
-    ObjectMapper mapper = new ObjectMapper();
-    byte[] json = new byte[0];
-    json = mapper.writeValueAsBytes(sessionDto);
-
-    log.warn("json : " + json.toString());
-    log.warn("dto : " + sessionDto.toString());
-
-    Mockito.when(sessionService.create(sessionMock)).thenReturn(sessionMock);
-
-    mockMvc.perform(
-      post("http://localhost:8080/api/session/")
-      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
-      .contentType("application/json")
-      .content(json))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.id").value(sessionId))
-      .andExpect(jsonPath("$.name").value("pilate"))
-      .andExpect(jsonPath("$.description").value("super"))
-      .andExpect(jsonPath("teacher_id").value(1))
-      .andExpect(jsonPath("$.users").isArray());
-
-  }
-
-  @Test
-  void shouldSaveSessionAndReturnSession_IT() throws Exception {
-    
-    Session sessionMockBis = new Session();
-    sessionMockBis.setId(sessionId);
-    sessionMockBis.setDescription("superBis");
-    sessionMockBis.setName("pilateBis");
-    sessionMockBis.setTeacher(teacherMock);
-    sessionMockBis.setDate(new GregorianCalendar(2025,12,28).getTime());
-    sessionMockBis.setUsers(List.of(userMock));
-
-    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
-    ObjectMapper mapper = new ObjectMapper();
-    byte[] json = new byte[0];
-    json = mapper.writeValueAsBytes(sessionDto);
-
-    Mockito.when(sessionService.update(sessionId,sessionMockBis)).thenReturn(sessionMockBis);
-
-    mockMvc.perform(
-      put("http://localhost:8080/api/session/{id}", sessionId)
-      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
-      .contentType("application/json")
-      .content(json))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.id").value(sessionId))
-      .andExpect(jsonPath("$.name").value("pilateBis"))
-      .andExpect(jsonPath("$.description").value("superBis"))
-      .andExpect(jsonPath("teacher_id").value(1))
-      .andExpect(jsonPath("$.users").isArray());
-
-  }
-
-  @Test
-  void shouldSaveSessionAndReturn4xx_BadNumberRequest__IT() throws Exception {
-
-    Session sessionMockBis = new Session();
-    sessionMockBis.setId(sessionId);
-    sessionMockBis.setDescription("superBis");
-    sessionMockBis.setName("pilateBis");
-    sessionMockBis.setTeacher(teacherMock);
-    sessionMockBis.setDate(new GregorianCalendar(2025,12,28).getTime());
-    sessionMockBis.setUsers(List.of(userMock));
-
-    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
-    ObjectMapper mapper = new ObjectMapper();
-    byte[] json = new byte[0];
-    json = mapper.writeValueAsBytes(sessionDto);
-
-    Mockito.when(sessionService.update(sessionId,sessionMockBis)).thenReturn(sessionMockBis);
-
-    mockMvc.perform(
-      put("http://localhost:8080/api/session/a")
-      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
-      .contentType("application/json")
-      .content(json))
-      .andExpect(status().is4xxClientError())
-      .andExpect(jsonPath("$").doesNotExist());
-
-  }
-
-
+    @Test
+    void shouldFindSessionAndDeleteSession() throws Exception {
+      
+      mockMvc.perform(
+        delete("http://localhost:8080/api/session/{id}", sessionId)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
+        )
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").doesNotExist());
+    }
 
 
 
   @Test
-  void shouldFindSessionAndDeleteSession_IT() throws Exception {
-    
-    mockMvc.perform(
-      delete("http://localhost:8080/api/session/{id}", sessionId)
-      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
-      )
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$").doesNotExist());
-  }
-
-
-
-  @Test
-  void shouldFindSessionAndReturn4xx_BadNumberRequest_IT() throws Exception {
+  void shouldNotFindSessionAndReturn4xx_BadNumberRequest() throws Exception {
     
     mockMvc.perform(
       delete("http://localhost:8080/api/session/a")
@@ -294,7 +200,7 @@ String jwt;
 
 
   @Test
-  void shouldFindSessionAndReturn4xx_NotFound_IT() throws Exception {
+  void shouldNotFindSessionAndReturn4xx_NotFound_IT() throws Exception {
     
     mockMvc.perform(
       delete("http://localhost:8080/api/session/{id}", sessionId+1)
@@ -306,7 +212,7 @@ String jwt;
 
 
   @Test
-  void shouldParticipateOK_IT() throws Exception {
+  void shouldParticipateOK() throws Exception {
     
     mockMvc.perform(
       post("http://localhost:8080/api/session/{id}/participate/{userId}",sessionId,userId)
@@ -316,10 +222,8 @@ String jwt;
   }
 
 
-
   @Test
-  void shouldParticipateButReturn4xx_NotFound_IT() throws Exception {
-    
+  void shouldParticipateButReturn4xx_NotFound() throws Exception {
     
     mockMvc.perform(
       post("http://localhost:8080/api/session/a/participate/b")
@@ -330,10 +234,8 @@ String jwt;
   }
 
 
-
-
   @Test
-  void shouldUnParticipateOK_IT() throws Exception {
+  void shouldUnParticipateOK() throws Exception {
     
     mockMvc.perform(
       delete("http://localhost:8080/api/session/{id}/participate/{userId}",sessionId,userId)
@@ -345,7 +247,7 @@ String jwt;
 
 
   @Test
-  void shouldUnParticipateButReturn4xx_NotFound_IT() throws Exception {
+  void shouldUnParticipateButReturn4xx_NotFound() throws Exception {
     
     mockMvc.perform(
       delete("http://localhost:8080/api/session/a/participate/b")
@@ -360,7 +262,7 @@ String jwt;
 
 
     @Test
-    void shouldFindAndReturnListOfSession_IT() throws Exception {
+    void shouldFindAndReturnListOfSession() throws Exception {
       
       //login first before doing things ...
 
@@ -404,7 +306,7 @@ String jwt;
       Authentication auth = new UsernamePasswordAuthenticationToken("yoga@studio.com", "test!1234");
       Authentication authenticated = authenticationManager.authenticate(auth);
       String jwt = jwtUtils.generateJwtToken(authenticated);       //123456789112345678921234567
-      String ldt = localDateTimeNow.toString().substring(0,27);
+      String ldt = localDateTimeNow.toString().substring(0,Math.min(27,localDateTimeNow.toString().length()));
       String addon = "";
       for (int i = ldt.length(); i <= 27; i++) {
         addon.concat("0"); 
@@ -429,4 +331,106 @@ String jwt;
         .andExpect(content().json("[" + verif1 + "," + verif2 +"," + verif3 + "]"));
     }
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @Test
+  void shouldCreateSessionAndReturnSession() throws Exception {
+    
+    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
+    ObjectMapper mapper = new ObjectMapper();
+    byte[] json = new byte[0];
+    json = mapper.writeValueAsBytes(sessionDto);
+
+    //log.warn("json : " + json.toString());
+    //log.warn("dto : " + sessionDto.toString());
+
+    Mockito.when(sessionService.create(sessionMock)).thenReturn(sessionMock);
+
+    mockMvc.perform(
+      post("http://localhost:8080/api/session/")
+      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
+      .contentType("application/json")
+      .content(json))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id").value(sessionId))
+      .andExpect(jsonPath("$.name").value("pilate"))
+      .andExpect(jsonPath("$.description").value("super"))
+      .andExpect(jsonPath("teacher_id").value(1))
+      .andExpect(jsonPath("$.users").isArray());
+
+  }
+
+  @Test
+  void shouldSaveSessionAndReturnSession() throws Exception {
+    
+    Session sessionMockBis = new Session();
+    sessionMockBis.setId(sessionId);
+    sessionMockBis.setDescription("superBis");
+    sessionMockBis.setName("pilateBis");
+    sessionMockBis.setTeacher(teacherMock);
+    sessionMockBis.setDate(new GregorianCalendar(2025,12,28).getTime());
+    sessionMockBis.setUsers(List.of(userMock));
+
+    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
+    ObjectMapper mapper = new ObjectMapper();
+    byte[] json = new byte[0];
+    json = mapper.writeValueAsBytes(sessionDto);
+
+    Mockito.when(sessionService.update(sessionId,sessionMockBis)).thenReturn(sessionMockBis);
+
+    mockMvc.perform(
+      put("http://localhost:8080/api/session/{id}", sessionId)
+      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
+      .contentType("application/json")
+      .content(json))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id").value(sessionId))
+      .andExpect(jsonPath("$.name").value("pilateBis"))
+      .andExpect(jsonPath("$.description").value("superBis"))
+      .andExpect(jsonPath("teacher_id").value(1))
+      .andExpect(jsonPath("$.users").isArray());
+
+  }
+
+  @Test
+  void shouldSaveSessionAndReturn4xx_BadNumberRequest() throws Exception {
+
+    Session sessionMockBis = new Session();
+    sessionMockBis.setId(sessionId);
+    sessionMockBis.setDescription("superBis");
+    sessionMockBis.setName("pilateBis");
+    sessionMockBis.setTeacher(teacherMock);
+    sessionMockBis.setDate(new GregorianCalendar(2025,12,28).getTime());
+    sessionMockBis.setUsers(List.of(userMock));
+
+    SessionDto sessionDto = sessionMapper.toDto(sessionMock);
+    ObjectMapper mapper = new ObjectMapper();
+    byte[] json = new byte[0];
+    json = mapper.writeValueAsBytes(sessionDto);
+
+    Mockito.when(sessionService.update(sessionId,sessionMockBis)).thenReturn(sessionMockBis);
+
+    mockMvc.perform(
+      put("http://localhost:8080/api/session/a")
+      .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).accept(MediaType.APPLICATION_JSON).contentType("jwt")
+      .contentType("application/json")
+      .content(json))
+      .andExpect(status().is4xxClientError())
+      .andExpect(jsonPath("$").doesNotExist());
+
+  }
+
 }

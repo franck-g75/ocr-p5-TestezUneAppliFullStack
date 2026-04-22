@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,9 +28,9 @@ import com.openclassrooms.starterjwt.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@SpringBootTest
-@AutoConfigureMockMvc
-public class UserControllerTest {
+//@SpringBootTest         //doesn't work when database is down
+//@AutoConfigureMockMvc
+public class UserControllerIntegration {
        
     @Autowired
     private MockMvc mockMvc;

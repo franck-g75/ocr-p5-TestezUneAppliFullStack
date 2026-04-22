@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.openclassrooms.starterjwt.Constantes;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 import com.openclassrooms.starterjwt.security.services.UserDetailsServiceImpl;
@@ -23,7 +24,7 @@ public class UserDetailServiceImplTest {
     private UserDetailsServiceImpl userDetailsServiceImpl;    //bean testé
 
     @MockBean
-	private UserRepository userRepository;  //bean mockée
+	private UserRepository userRepository;  //bean mocké
 
     @Test
 	public void contextLoads() {
@@ -35,10 +36,10 @@ public class UserDetailServiceImplTest {
 		//ARRANGE   GIVEN
         User userMock = new User();
         userMock.setId(1L);
-        userMock.setEmail("alice.tortellini@truc.com");
-		userMock.setFirstName("Alice");
-        userMock.setLastName("tortellini");
-        userMock.setPassword("pwdpwd");
+        userMock.setEmail(Constantes.STRING_EMAIL_YOGA);
+		userMock.setFirstName(Constantes.STRING_ALICE);
+        userMock.setLastName(Constantes.STRING_TAGLIONI);
+        userMock.setPassword(Constantes.STRING_PWD_NOT_CRYPTE);
         userMock.setAdmin(false);
 
         Mockito.when(userRepository.findByEmail(userMock.getEmail())).thenReturn(Optional.of(userMock));
@@ -56,10 +57,10 @@ public class UserDetailServiceImplTest {
 		//ARRANGE   GIVEN
         User userMock = new User();
         userMock.setId(1L);
-        userMock.setEmail("alice.tortellini@truc.com");
-		userMock.setFirstName("Alice");
-        userMock.setLastName("tortellini");
-        userMock.setPassword("pwdpwd");
+        userMock.setEmail(Constantes.STRING_EMAIL_YOGA);
+		userMock.setFirstName(Constantes.STRING_ALICE);
+        userMock.setLastName(Constantes.STRING_TAGLIONI);
+        userMock.setPassword(Constantes.STRING_PWD_NOT_CRYPTE);
         userMock.setAdmin(false);
         
         Mockito.when(userRepository.findByEmail(userMock.getEmail())).thenReturn(Optional.of(userMock));
@@ -69,8 +70,10 @@ public class UserDetailServiceImplTest {
 
         //ASSERT VERIFY        
         Assertions.assertNotNull(user);
-        Assertions.assertEquals("alice.tortellini@truc.com", user.getUsername());
-		Assertions.assertEquals("pwdpwd", user.getPassword());
+        Assertions.assertEquals(Constantes.STRING_EMAIL_YOGA, user.getUsername());
+		Assertions.assertEquals(Constantes.STRING_PWD_NOT_CRYPTE, user.getPassword());
+        //Assertions.assertEquals("pwdpwd", user.getFirstName()); //doesn't exist in UserDetails
+        //Assertions.assertEquals("pwdpwd", user.getLastName());  //doesn't exist in UserDetails
     }
 
 }
