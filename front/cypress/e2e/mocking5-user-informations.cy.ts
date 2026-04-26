@@ -3,6 +3,8 @@ import { adminEmail, adminTruePassword, userTrueEmail, userTruePassword } from '
 
 describe('info user spec', () => {
   
+  //GIVEN
+
   it.only('user informations successful', () => {
     
     cy.intercept('POST', '/api/auth/login', {
@@ -53,11 +55,15 @@ describe('info user spec', () => {
             }
        ).as('user');
 
+    //WHEN
+    
     cy.visit("http://localhost:4200/login");
     
     cy.get('input[formControlName=email]').type(userTrueEmail);
     cy.get('input[formControlName=password]').type(userTruePassword + `{enter}{enter}`);
 
+    //THEN
+    
     cy.url().should('include', '/sessions')
 
     cy.get('[data-cy="meLink"]').click();
@@ -74,6 +80,8 @@ describe('info admin spec', () => {
   
   it.only('admin informations successful', () => {
     
+    //GIVEN
+
     cy.intercept('POST', '/api/auth/login', {
       body: {
         id: 2,
@@ -101,11 +109,14 @@ describe('info admin spec', () => {
             }
        ).as('user');
 
+    //WHEN
+    
     cy.visit("http://localhost:4200/login");
     
     cy.get('input[formControlName=email]').type(userTrueEmail);
     cy.get('input[formControlName=password]').type(userTruePassword + `{enter}{enter}`);
 
+    //THEN
     cy.url().should('include', '/sessions')
 
     cy.get('[data-cy="meLink"]').click();

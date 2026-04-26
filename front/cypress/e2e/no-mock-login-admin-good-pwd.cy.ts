@@ -7,6 +7,9 @@ import { adminEmail, adminTruePassword } from '../support/Constants.ts';
 
 before(() => {
   
+    //GIVEN NOTHING
+
+    //WHEN
     cy.visit("http://localhost:4200/login");
     cy.get('input[formControlName=email]').type(adminEmail);
     cy.get('input[formControlName=password]').type(adminTruePassword + `{enter}{enter}`);
@@ -15,6 +18,8 @@ before(() => {
 
 describe('Login spec', () => {
   it.only('Login successfull', () => {
+
+      //THEN
 
       //cy.visit("http://localhost:4200/sessions");
       cy.contains("Rentals available").should('be.visible');

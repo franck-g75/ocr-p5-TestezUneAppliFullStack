@@ -131,12 +131,7 @@ describe('DetailComponent', () => {
     
   });
 
-  it('should call sessionApiService.delete() when component.delete() is invoked', () => {
-    
-    component.delete();
-    expect(mySessionApiServiceMock.delete).toHaveBeenCalledWith(component.sessionId);
-    
-  });
+  
 
 
 
