@@ -143,7 +143,6 @@
           "options": {
             "devServerTarget": "yoga:serve-coverage",
             "watch": true,
-            "proxyConfig": "src/proxy.config.json",
             "headless": false
           },
           "configurations": {

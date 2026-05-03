@@ -17,7 +17,7 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 
 
 @SpringBootTest
-public class UserServiceTest {
+public class UserServiceUnitTest {
 
 	@Autowired
     private UserService userService; //bean réel lié (service à tester)

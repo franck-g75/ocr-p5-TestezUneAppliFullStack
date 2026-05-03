@@ -3,17 +3,7 @@ import { expect } from '@jest/globals';
 
 import { SessionService } from './session.service';
 import { SessionInformation } from '../interfaces/sessionInformation.interface';
-import { of } from 'rxjs/internal/observable/of';
-import { HttpClientModule } from '@angular/common/http';
-import { RouterTestingModule } from '@angular/router/testing';
 
-class MySessionServiceMock {
-  participate = jest.fn().mockReturnValue(of(null));
-  unParticipate = jest.fn().mockReturnValue(of(null));
-  delete = jest.fn().mockReturnValue(of(null));
-  create = jest.fn().mockReturnValue(of(null));
-  update = jest.fn().mockReturnValue(of(null));
-}
 
 describe('SessionService', () => {
   let service: SessionService;

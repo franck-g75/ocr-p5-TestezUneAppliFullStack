@@ -26,7 +26,7 @@ import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
 
 @SpringBootTest
-public class SessionServiceTest {
+public class SessionServiceUnitTest {
 
 	@Mock 
 	private SessionRepository sessionRepository;  //classe mockée

@@ -1,18 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-
-# Coverage
-**/.nyc_output/**
-
-
 # Compiled output
 /dist
 /tmp
 /out-tsc
 /bazel-out
-
-
-
 
 # Node
 /node_modules
@@ -44,12 +36,9 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
-/cypress/screenshots/
 
 # System files
 .DS_Store
 Thumbs.db
 
 **/.DS_Store 
-
-

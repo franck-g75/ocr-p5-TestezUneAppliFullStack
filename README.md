@@ -9,7 +9,17 @@
 
 [Tests du projet](#tests-du-projet-)
 
-[Couverture des Tests du projet](#couverture-des-tests-du-projet-)
+- [Tests JEST](#tests-jest-)
+
+- [Couverture JEST](#couverture-jest-)
+
+- [Tests Cypress](#tests-cypress-)
+
+- [Couverture Cypress](#couverture-cypress-)
+
+- [Tests JAVA junit mockito](#tests-java-junit-mockito)
+
+- [Couverture JAVA jacoco](#couverture-java-jacoco-)
 
 [Liste des soucis rencontrés](#liste-des-soucis-rencontrés)
 
@@ -106,12 +116,13 @@ oc.app.jwtExpirationMs=86400000
 ```
 
 ## EXECUTION du projet :
+
 Verifier quand meme que le démon de la base de données est lancé dans le gestionnaire des taches (chercher mysqld dans service)
 
 Il faut lancer le serveur puis lancer le client avant de pouvoir ouvrir la page.
 Pour ce faire, 
 - Dans un cmd, executer la commande dans le repertoire **back** : **mvn spring-boot:run**
-- Dans un autre cmd, executer la commande dans le répertoire **front** : **ng serve**
+- Dans un autre cmd, executer la commande dans le répertoire **front** : **npm run start** qui exécute ng serve
 - vérifier qu'aucune erreur n'est levée
 - Puis, dans un navigateur taper l'url : [http://localhost:4200](http://localhost:4200)
 - login: yoga@studio.com
@@ -119,35 +130,21 @@ Pour ce faire,
 
 ## TESTS du projet :
 
-### JEST :
+Pour la gestion de projet de test, je me suis laissé guidé par le sujet. J'ai fait J=les tests JEST en regardant la couverture JEST, puis j'ai continué sur les tests CYPRESS mais j'ai eu des difficultés pour avoir la couverture CYPRESS (je l'ai trouvée en final) puis j'ai réalisé les tests JAVA en m'appuyant sur la couverture COCOMO.
+
+### Tests JEST :
+
 - arreter le client pour passer les tests
 - installer un composant additionnel dans une cmd du répertoire front 
-- npm install --save-dev jest jest-preset-angular@12.2.0
+- **npm install --save-dev jest jest-preset-angular@12.2.0**
 - taper la commande **npx jest** ou **npm run test** pour lancer les tests
-- normalement 55 tests sont passés avec succès
+- normalement 54 tests sont passés avec succès
 
 ![jest tests](./ressources/img/jest-tests.jpg)
 
-### CYPRESS :
-- redémarrer le client **ng serve** dans un cmd répertoire front
-- taper **npx xypress run** pour lancer les tests end to end
-- normalement 24 tests s'exécutent sans erreurs
+### Couverture JEST : 
 
-![cypress tests](./ressources/img/cypress-tests.jpg)
-
-### JAVA JUNIT MOCKITO
-
-- arreter le serveur pour passer les tests (Ctrl C)
-- taper **mvn clean test** pout passer tous les tests
-- normalement 61 tests passent avec succès
-
-![java tests](./ressources/img/java-tests.jpg)
-
-## COUVERTURE DES TESTS du projet :
-
-### JEST
-
-Pour calculer le taux de couverture des tests JEST, il faut :
+Pour calculer le taux de couverture des tests JEST, qui sert beaucoup pour savoir ce qu'il reste à tester, il faut :
 
 - taper la commande **npx jest --coverage**
 - normalement, on obtient ces résultats
@@ -158,40 +155,38 @@ ou bien sur le site disponible à l'adresse ./front/coverage/jest/lcov-report/in
 
 ![jest couverture site](./ressources/img/jest-coverage-site.jpg)
 
-### CYPRESS
+### Tests CYPRESS :
+Dans une fenetre de commande git (git obligatoire)(il existe une commande rm dedans...)
+- taper **npm run e2e** pour lancer les tests end to end
+- normalement 23 tests s'exécutent sans erreurs
 
-Pour calculer le taux de couverture des tests CYPRESS, il faut regarder le fichier excel :
+![cypress tests](./ressources/img/cypress-tests.jpg)
 
-Il existe 16 tests à faire dans le plan de test fourni par le sujet.
+### Couverture CYPRESS : 
 
-|**type de test**|**détail du test**|**nom fonction**|**Où**|**nb**|
-|:-|:-|:-|:-:|:-:|
-|login|La connexion|login + no-mock-login-admin-good-pwd + mocking2-user-connexion|cypress|5|
-|login|La gestion des erreurs en cas de mauvais login|no-mock-login-admin-wrong-pwd|cypress|1|
-|password|L’affichage d’erreur en l’absence d’un champ obligatoire|login.component|jest|2|
-|register|La création de compte|mocking1-user-creation|cypress|3|
-|register|L’affichage d’erreur en l’absence d’un champ obligatoire|register.component|jest|7|
-|sessions|Affichage de la liste des sessions|mocking3-session-list-user-and-admin|cypress|1|
-|sessions|L’apparition des boutons Create et Detail si l’utilisateur connecté est un admin|mocking3-session-list-user-and-admin|cypress|1|
-|informations session|Les informations de la session sont correctement affichées|mocking4-session-detail-user-and-admin|cypress|1|
-|informations session|Le bouton Delete apparaît si l'utilisateur connecté est un admin|mocking4-session-detail-user-and-admin|cypress|1|
-|création session|La session est créée|mocking6-admin-CRUD-session|cypress|1|
-|creation session|L’affichage d’erreur en l’absence d’un champ obligatoire|form.component|jest|5|
-|suppression session|La session est correctement supprimée|mocking6-admin-CRUD-session|cypress|1|
-|modification session|La session est modifiée|mocking6-admin-CRUD-session|cypress|1|
-|modification session|L’affichage d’erreur en l’absence d’un champ obligatoire|form.component|jest|-|
-|account|Affichage des informations de l’utilisateur|mocking5-user-informations|cypress|2|
-|logout|La déconnexion de l’utilisateur|mocking7-logout-admin-and-user|cypress|2|
-:test end to end
+Pour calculer le taux de couverture des tests CYPRESS, il faut :
 
-20 tests ont été réalisés sous cypress et 15 tests avaient déjà été réalisés sous jest.
-Il existe 3 tests pour tester des liens (le premier tests réalisé) + 1 test de vulnerabilité XSS dans mocking6-admin-CRUD-session
+- Taper la commande **npm run e2e:coverage** dans le repertoire front, serveur éteint (mais juste après avoir passé la commande **npm run e2e**)
+- J'obtiens le résultat suivant : 
+
+![cypress couverture](./ressources/img/cypress-coverage.jpg)
+
+ou bien sur le site disponible à l'adresse : yoga/front/coverage/lcov-report/index.html
+
+![cypress couverture site](./ressources/img/cypress-coverage-site.jpg)
 
 
-### JAVA
+### Tests JAVA JUNIT MOCKITO
+
+- arreter le serveur pour passer les tests (Ctrl C) s'il est démarré
+- taper **mvn clean test** pout passer tous les tests
+- normalement 66 tests passent avec succès
+
+![java tests](./ressources/img/java-tests.jpg)
+
+### Couverture JAVA Jacoco : 
 
 Pour calculer le taux de couverture des tests java, il faut :
-  
 - arreter le serveur (Ctrl C)
 - avoir au préalable configurer sur quel ensemble la couverture se base . **(déjà fait dans les sources)**
   - ajouter à la balise plugin du groupID org.jacocoo dans le POM.xml
@@ -214,29 +209,29 @@ Pour calculer le taux de couverture des tests java, il faut :
 
 - exécuter les tests sans erreur en tapant **mvn clean test**
 - visualiser le fichier ./back/target/site/index.html
-- normalement 85% des tests sont réalisés
+- normalement 94% des tests sont réalisés
 
 ![java couverture](./ressources/img/java-coverage.jpg)
-
-
 
 
 ## Liste des soucis rencontrés
 ### Dans les sources :
 - Le bouton supprimer l'utilisateur ne fonctionne pas (vu uniquement dans les tests de la page me)
 - Les fonctions min et max n'existent pas il faut les remplacer par minLength et maxLength (corrigé)
-- La base de données accepterai des users de meme email (pas de unique constraint sauf dans les sources de la table USERS) (en fait c'est géré dans le code)
+- La base de données accepterai des users de meme email (pas de unique constraint sauf dans les sources de la table USERS) (en fait c'est géré dans le code ==> rien à faire)
 - Il manque une fonction : comment un admin règle un user en admin
 - J'ai vu des fonctions isEnabled, isAccountNonExpired, isAccountNonLocked et isCredentialNonExpired non implémentées retournent toujours true, est ce normal ? (La connexion se fait par un token. c'est surement pour ça)
 
-### Dans la méthode
-- Ce n'est pas très juste de remplir un pourcentage de tests.
-  - certaines fois le testeur peut tester avec augmentation du pourcentage mais sans apport véritable au projet (dto).
 
 ### Dans la technique
-- Très difficile de produire des rappports de couverture de tests cypress : 
-  - Il faut instrumenter le code d'abord.
-  - Cela ne semble pas prêt à être utilisé tel que.
+- Ce n'est pas très juste de remplir un pourcentage de tests.
+  - certaines fois le testeur peut tester avec augmentation du pourcentage mais sans apport véritable au projet (dto).
+- Il faut bien utiliser les outils qu'on a à disposition (git)
+  - j'ai tenté de faire sans : j'ai perdu du temps.
+
+### Dans la méthode
+- Il ne faut pas toucher ce qui fonctionne déjà...
+  - Les tests et la couverture de code cypress étaient déjà installé mais comme je l'ai pas utilisé les bonnes commandes dès le départ j'ai cru qu'il fallait installer des choses et donc j'ai cassé l'existant. ==> là j'ai perdu énormément de temps (j'ai dû tout refaire depuis zéro à la fin pour avoir la couverture cypress)
 
 ### Dans la vie
 - je me suis marié.

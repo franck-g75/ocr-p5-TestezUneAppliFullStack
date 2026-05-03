@@ -29,7 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @SpringBootTest
 @ExtendWith(OutputCaptureExtension.class)
-public class JwtUtilsTest {
+public class JwtUtilsUnitTest {
     
     @Autowired
     private JwtUtils jwtUtils;

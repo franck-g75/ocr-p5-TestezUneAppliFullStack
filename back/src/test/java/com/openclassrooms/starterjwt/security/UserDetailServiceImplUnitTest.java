@@ -18,7 +18,7 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 import com.openclassrooms.starterjwt.security.services.UserDetailsServiceImpl;
 
 @SpringBootTest
-public class UserDetailServiceImplTest {
+public class UserDetailServiceImplUnitTest {
     
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;    //bean testé

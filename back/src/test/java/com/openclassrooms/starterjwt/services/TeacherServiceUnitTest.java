@@ -19,7 +19,7 @@ import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.repository.TeacherRepository;
 
 @SpringBootTest
-public class TeacherServiceTest {
+public class TeacherServiceUnitTest {
 
     @Autowired
     private TeacherService teacherService; //bean réel lié
