@@ -67,8 +67,8 @@ Pour installer l'environnement de développement, j'ai fait (dans l'ordre)
     Test Runner for java
 - Installation de git pour pusher mon code (mais pas que...)
   - récupérer le code [ici](https://github.com/franck-g75/ocr-p5-TestezUneAppliFullStack)
-  - faire **git clone https://github.com/franck-g75/ocr-p5-TestezUneAppliFullStack **
-  - puis faire **c**d ocr-p5-TestezUneAppliFullStack**
+  - ou faire **git clone https://github.com/franck-g75/ocr-p5-TestezUneAppliFullStack**
+  - puis faire **cd ocr-p5-TestezUneAppliFullStack**
   - vérifier que le projet est bien géré dans git en tapant **git status**
   - git peut servir aussi à passer des lignes de commandes
 - Installation spécifique au poste de développement
@@ -146,7 +146,7 @@ Pour la gestion de projet de test, je me suis laissé guidé par le sujet. J'ai 
 
 Pour calculer le taux de couverture des tests JEST, qui sert beaucoup pour savoir ce qu'il reste à tester, il faut :
 
-- taper la commande **npx jest --coverage**
+- taper la commande **npx jest --coverage**  dans le répertoire **./front**
 - normalement, on obtient ces résultats
 
 ![jest couverture](./ressources/img/jest-coverage.jpg)
@@ -156,8 +156,8 @@ ou bien sur le site disponible à l'adresse ./front/coverage/jest/lcov-report/in
 ![jest couverture site](./ressources/img/jest-coverage-site.jpg)
 
 ### Tests CYPRESS :
-Dans une fenetre de commande git (git obligatoire)(il existe une commande rm dedans...)
-- taper **npm run e2e** pour lancer les tests end to end
+Dans une fenetre de commande 
+- taper **npm run e2e** dans le répertoire **./front** pour lancer les tests end to end
 - normalement 23 tests s'exécutent sans erreurs
 
 ![cypress tests](./ressources/img/cypress-tests.jpg)
@@ -166,7 +166,7 @@ Dans une fenetre de commande git (git obligatoire)(il existe une commande rm ded
 
 Pour calculer le taux de couverture des tests CYPRESS, il faut :
 
-- Taper la commande **npm run e2e:coverage** dans le repertoire front, serveur éteint (mais juste après avoir passé la commande **npm run e2e**)
+- Taper la commande **npm run e2e:coverage** dans le repertoire **./front**, serveur éteint (mais juste après avoir passé la commande **npm run e2e**)
 - J'obtiens le résultat suivant : 
 
 ![cypress couverture](./ressources/img/cypress-coverage.jpg)
@@ -179,7 +179,7 @@ ou bien sur le site disponible à l'adresse : yoga/front/coverage/lcov-report/in
 ### Tests JAVA JUNIT MOCKITO
 
 - arreter le serveur pour passer les tests (Ctrl C) s'il est démarré
-- taper **mvn clean test** pout passer tous les tests
+- taper **mvn clean test** dans le répertoire **./back** pour passer tous les tests
 - normalement 66 tests passent avec succès
 
 ![java tests](./ressources/img/java-tests.jpg)
@@ -235,5 +235,21 @@ Pour calculer le taux de couverture des tests java, il faut :
 
 ### Dans la vie
 - je me suis marié.
+
+
+## Liste des choses apprises
+
+### La technique et les outils : Je n'avais jamais testé un projet...
+
+ - JEST
+ - Cypress
+ - Java Mockito 
+
+### La gestion de projet est une part importante des tests
+
+ - J'ai vite été perdu dans mes propres tests
+ - les outils de couvertures sont salutaires
+ - le temps que cela prend est impressionnant
+
 
 

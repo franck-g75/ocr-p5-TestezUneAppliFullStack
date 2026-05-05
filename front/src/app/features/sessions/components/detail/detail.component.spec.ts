@@ -3,7 +3,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule, } from '@angular/router/testing';
-import { expect } from '@jest/globals'; 
+import { beforeAll, expect, jest } from '@jest/globals'; 
 import { SessionService } from '../../../../services/session.service';
 
 import { DetailComponent } from './detail.component';

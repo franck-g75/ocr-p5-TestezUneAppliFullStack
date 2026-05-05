@@ -7,7 +7,7 @@
     "test:watch": "jest --watch",
     "lint": "ng lint",
     "coverage:clean": "rm -rf .nyc_output coverage",
-    "e2e": "npm run coverage:clean && npm run e2e:ci",
+    "e2e": "npm run e2e:ci",
     "e2e-svg": "ng e2e",
     "e2e:ci": "ng run yoga:e2e-ci",
     "e2e:coverage": "npx nyc report --reporter=lcov --reporter=text-summary",

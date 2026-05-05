@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { expect } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 
 import { RegisterComponent } from './register.component';
 import { of } from 'rxjs/internal/observable/of';

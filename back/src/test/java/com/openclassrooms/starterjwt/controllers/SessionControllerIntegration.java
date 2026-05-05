@@ -90,7 +90,7 @@ public class SessionControllerIntegration<JpaMappingContext> {
     String jwt;
     
 
-/*
+
     @BeforeEach
     void beforeEach(){
 
@@ -421,6 +421,6 @@ public class SessionControllerIntegration<JpaMappingContext> {
       .andExpect(jsonPath("$").doesNotExist());
 
   }
-*/
+
 
 }

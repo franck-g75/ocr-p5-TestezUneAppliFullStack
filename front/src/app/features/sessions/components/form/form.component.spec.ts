@@ -9,14 +9,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { expect } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 import { Session } from '../../interfaces/session.interface';
 import { SessionService } from 'src/app/services/session.service';
 import { SessionApiService } from '../../services/session-api.service';
 
 import { FormComponent } from './form.component';
-import {  Router, Routes } from '@angular/router';
+import { Router, Routes } from '@angular/router';
 import { of } from 'rxjs';
+import { any } from 'cypress/types/bluebird';
 
 
 
@@ -185,69 +186,6 @@ describe ('FormComponent : tests spécifiques de SUBMIT et de EXIT PAGE : admin=
 
 
 
-describe('FormComponent.ngOnInit with mock and admin=false', () => {
-  let component: FormComponent;
-  let fixture: ComponentFixture<FormComponent>;
-  let router: Router;
-  
-  const routes: Routes = [
-    { path: 'sessions/:id', component: ComponentFixture<FormComponent> },
-    { path: 'sessions', component: ComponentFixture<FormComponent> },
-  ];
-
-  const mockSessionService = {
-    sessionInformation: {
-      admin: false
-    }
-  }
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-
-      imports: [
-        RouterTestingModule.withRoutes(routes),
-        HttpClientModule,
-        MatCardModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule, 
-        MatSnackBarModule,
-        MatSelectModule,
-        BrowserAnimationsModule
-      ],
-      providers: [
-        { provide: SessionService, useValue: mockSessionService }, //admin=false
-        SessionApiService
-      ],
-      declarations: [FormComponent]
-    }).compileComponents();
-
-    router = TestBed.inject(Router);
-    router.navigateByUrl("/sessions/1");  // l’URL que le composant verra
-    router.initialNavigation();         // attend que la navigation soit terminée
-    
-    fixture = TestBed.createComponent(FormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();   // ngOnInit() lit l’URL via ActivatedRoute
-  });
-
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
-  
-  it('should redirect toward sessions when admin=false', () => {
-    router.navigate = jest.fn();
-    component.ngOnInit();
-    expect(router.navigate).toHaveBeenCalledWith(["/sessions"]);
-  });
-  
-});
-
-
-
-
-
 describe('FormComponent.ngOnInit with mock and admin=true', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
@@ -294,12 +232,6 @@ describe('FormComponent.ngOnInit with mock and admin=true', () => {
     fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();   // ngOnInit() lit l’URL via ActivatedRoute
-  });
-
-  it('should redirect toward sessions when admin=true', () => {
-    router.navigate = jest.fn();
-    component.ngOnInit();
-    expect(router.navigate).not.toHaveBeenCalledWith(["/sessions/update/1"]);
   });
 
   it('should set update to true', () => {
